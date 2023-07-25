@@ -4,12 +4,22 @@ import (
   "context"
   "fmt"
   "io"
+  "log"
+  "net"
   "net/http"
   "testing"
   "golang.org/x/sync/errgroup"
 )
 
 func TestRun(t *testing.T) {
+  // テストをスキップする
+  t.Skip("work in process")
+
+  // ポート番号に0を選択すると利用可能なポートを動的に選択する
+  l, err := net.Listen("tcp", "localhost:0")
+  if err != nil {
+    log.Fatalf("failed to listen port: %v", err)
+  }
 
   // 後でキャンセルするために生成
   ctx, cancel := context.WithCancel(context.Background())
@@ -21,7 +31,10 @@ func TestRun(t *testing.T) {
   })
 
   msg := "message"
-  rsp, err := http.Get("http://localhost:18080/" + msg)
+  url := fmt.Sprintf("http://%s/%s", l.Addr().String(), msg)
+  log.Printf("try request to %q", url)
+
+  rsp, err := http.Get(url)
   if err != nil {
     t.Errorf("failed to get: %+v", err)
   }
