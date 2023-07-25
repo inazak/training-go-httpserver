@@ -12,8 +12,6 @@ import (
 )
 
 func TestRun(t *testing.T) {
-  // テストをスキップする
-  t.Skip("work in process")
 
   // ポート番号に0を選択すると利用可能なポートを動的に選択する
   l, err := net.Listen("tcp", "localhost:0")
@@ -24,10 +22,15 @@ func TestRun(t *testing.T) {
   // 後でキャンセルするために生成
   ctx, cancel := context.WithCancel(context.Background())
 
+  mux := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
+  })
+
   // run関数を別goroutineで起動しておく
   eg, ctx := errgroup.WithContext(ctx)
   eg.Go( func() error {
-    return run(ctx)
+    s := NewServer(l, mux)
+    return s.Run(ctx)
   })
 
   msg := "message"
