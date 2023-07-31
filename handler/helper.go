@@ -12,6 +12,7 @@ type ErrResponse struct {
   Details []string `json:"details,omitempty"`
 }
 
+// any = interface{}
 func RespondJSON(ctx context.Context, w http.ResponseWriter, body any, status int) {
   w.Header().Set("Context-Type", "application/json; charset=utf-8")
 

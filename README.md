@@ -13,6 +13,24 @@
 - タスクを一覧するエンドポイントの追加
 - go-chi をルーティングに利用
 
+
+```
+entity.Task
+がタスクの構造で
+
+store.TaskStore = { LastID, map[TaskID]*Task }
+               .Add( Task )
+               .All() Tasks
+がタスク操作の構造
+
+storeに var Tasks で store.TaskStore がある状態
+
+hander には store.TaskStore をさらにラップした
+AddTask, ListTask があり、これは
+.ServeHTTP をサポートしていて、muxでhandlerとして使われる
+
+ちょっとTaskという単語が多い
+```
  
 ### v0.0.3
 

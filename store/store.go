@@ -6,11 +6,13 @@ import (
 )
 
 var (
+  // 永続化なしの実装
   Tasks = &TaskStore{ Tasks: map[entity.TaskID]*entity.Task{} }
 
   ErrNotFound = errors.New("not found")
 )
 
+// タスクの操作に関する構造とメソッド
 type TaskStore struct {
   LastID entity.TaskID
   Tasks map[entity.TaskID]*entity.Task

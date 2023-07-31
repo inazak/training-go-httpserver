@@ -16,6 +16,7 @@ func TestListTask(t *testing.T) {
     rspFile string
   }
 
+  // これ名前をtestsにしない方がよくないか
   tests := map[string]struct {
     tasks map[entity.TaskID]*entity.Task
     want  want
@@ -54,7 +55,6 @@ func TestListTask(t *testing.T) {
 
       w := httptest.NewRecorder()
       r := httptest.NewRequest(http.MethodGet, "/tasks", nil)
-
 
       sut := ListTask{ Store: &store.TaskStore{ Tasks: tt.tasks } }
       sut.ServeHTTP(w, r)

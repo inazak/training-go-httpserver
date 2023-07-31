@@ -17,6 +17,7 @@ func NewMux() http.Handler {
     _, _ = w.Write([]byte(`{status: "ok"}`))
   })
 
+  // ハンドラ単位でvalidatorインスタンスを保持している
   v := validator.New()
   at := &handler.AddTask{ Store: store.Tasks, Validator: v }
   mux.Post("/tasks", at.ServeHTTP)

@@ -11,6 +11,19 @@ import (
   "github.com/inazak/training-go-httpserver/testutil"
 )
 
+// t.Parallel をトップレベルで書くと
+// t.Parallel をトップレベルで呼び出していない他のテストが実行され、
+// その後、t.Parallel を呼び出しているテストが並列に実行される、
+// t.Run のサブテスト関数で t.Parallel を呼び出している場合
+// そのトップレベルのテスト関数が終了して戻ったあと、(*1)
+// サブテスト関数が並列して実行される
+// 並列を最大にするには、トップレベルのテスト関数と、
+// サブテスト関数の両方で t.Parallel を呼び出す必要がある
+// t.Runによるサブテスト関数内で、t.Parallel を呼び出している場合
+// defer ではなく、t.Cleanup で後処理を書く
+// defer は (*1)のタイミングで実行されてしまうため
+// Cleanup はテスト、サブテストの全てが完了したときに呼び出される
+
 func TestAddTask(t *testing.T) {
   t.Parallel()
 
@@ -19,6 +32,7 @@ func TestAddTask(t *testing.T) {
     rspFile string
   }
 
+  // これ名前をtestsにしない方がよくないか
   tests := map[string]struct {
     reqFile string
     want    want
