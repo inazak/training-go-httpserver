@@ -1,9 +1,5 @@
 package entity
 
-import (
-  "time"
-)
-
 type TaskID int
 type TaskStatus string
 
@@ -14,10 +10,11 @@ const (
 )
 
 type Task struct {
-  ID      TaskID     `json:"id"`
-  Title   string     `json:"title"`
-  Status  TaskStatus `json:"status"`
-  Created time.Time  `json:created`
+  ID      TaskID     `json:"id"       db:"id"`
+  Title   string     `json:"title"    db:"title"`
+  Status  TaskStatus `json:"status"   db:"status"`
+  Created string     `json:"created"  db:"created"`
+  Modified string    `json:"modified" db:"modified"`
 }
 
 type Tasks []*Task

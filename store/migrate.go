@@ -32,29 +32,56 @@ import (
 //go:embed script/*.sql
 var fs embed.FS
 
-func RunMigrateUp(db *sql.DB) error {
+func createMigrate(db *sql.DB) (*migrate.Migrate, error) {
 
   dbdriver, err := sqlite3.WithInstance(db, &sqlite3.Config{})
   if err != nil {
-    return errors.Wrap(err, "creating sqlite3 db driver failed")
+    return nil, errors.Wrap(err, "creating sqlite3 db driver failed")
   }
 
   fsdriver, err := iofs.New(fs, "script")
   if err != nil {
-    return errors.Wrap(err, "creating filesystem driver failed")
+    return nil, errors.Wrap(err, "creating filesystem driver failed")
   }
 
   m, err := migrate.NewWithInstance("iofs", fsdriver, "sqlite3", dbdriver)
   if err != nil {
-    return errors.Wrap(err, "initializing db migration failed")
+    return nil, errors.Wrap(err, "initializing db migration failed")
+  }
+
+  return m, nil
+}
+
+
+func RunMigrateUp(db *sql.DB) error {
+
+  m, err := createMigrate(db)
+  if err != nil {
+    return errors.Wrap(err, "create migrate failed")
   }
 
   err = m.Up()
   if err != nil && err != migrate.ErrNoChange {
-    return errors.Wrap(err, "migrate database failed")
+    return errors.Wrap(err, "migrate database up failed")
   }
 
   return nil
 }
+
+func RunMigrateDown(db *sql.DB) error {
+
+  m, err := createMigrate(db)
+  if err != nil {
+    return errors.Wrap(err, "create migrate failed")
+  }
+
+  err = m.Down()
+  if err != nil && err != migrate.ErrNoChange {
+    return errors.Wrap(err, "migrate database down failed")
+  }
+
+  return nil
+}
+
 
 

@@ -2,6 +2,26 @@
 
 ## 履歴
 
+### v0.0.5
+
+- sqlite3をgolang-migrateでUPする
+- sqlite3にdate/time型がないので調整
+- sqlxをラップするinterfaceの定義
+- clockパッケージの追加
+- DBへのIOを行うメソッドをRepository構造に追加
+
+```
+repository.go にある New() は、*sqlx.DB を返す、
+それとは別に Repository構造の定義があり、これは Clocker を持っているだけ
+
+```
+
+直すべき点
+
+```
+
+```
+
 ### v0.0.4
 
 - entity.Task でタスク構造の定義
@@ -28,8 +48,6 @@ storeに var Tasks で store.TaskStore がある状態
 hander には store.TaskStore をさらにラップした
 AddTask, ListTask があり、これは
 .ServeHTTP をサポートしていて、muxでhandlerとして使われる
-
-ちょっとTaskという単語が多い
 ```
  
 ### v0.0.3
