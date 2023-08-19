@@ -33,7 +33,11 @@ func run(ctx context.Context) error {
   url := fmt.Sprintf("http://%s", l.Addr().String())
   log.Printf("start with: %s", url)
 
-  mux := NewMux()
+  mux, err := NewMux(ctx, cfg)
+  if err != nil {
+    return fmt.Errorf("failed to create mux")
+  }
+
   s := NewServer(l, mux)
   return s.Run(ctx)
 }

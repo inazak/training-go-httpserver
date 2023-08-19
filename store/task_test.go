@@ -8,6 +8,8 @@ import (
   "github.com/inazak/training-go-httpserver/entity"
 )
 
+// テスト用のRDBをオープンして書き込みと読み出し
+
 func TestAddTaskAndListTask(t *testing.T) {
 
   db, err := createDBForTest(t)

@@ -7,8 +7,9 @@ import (
   "testing"
   "github.com/go-playground/validator/v10"
   "github.com/inazak/training-go-httpserver/entity"
-  "github.com/inazak/training-go-httpserver/store"
   "github.com/inazak/training-go-httpserver/testutil"
+  "github.com/inazak/training-go-httpserver/mock"
+  "github.com/golang/mock/gomock"
 )
 
 // t.Parallel をトップレベルで書くと
@@ -24,6 +25,31 @@ import (
 // defer は (*1)のタイミングで実行されてしまうため
 // Cleanup はテスト、サブテストの全てが完了したときに呼び出される
 
+
+// gomock を使ったテストの構築
+// interface に go generate で mockパッケージの生成
+// mockパッケージをインポートして
+//      ctrl := gomock.NewController(t)
+//      defer ctrl.Finish()
+//      m := mock.NewMockXXXX(ctrl)
+//      m.EXPECT().Func(1, 2, gomock.Any()).Return("ok")
+// のようにするが、複数ケースをループで起動するテストの場合は
+// テストケース自体にモックのセットアップ関数を組み込んで
+//  tests := map[string]struct {
+//    ...
+//    prepareMock func(m *mock.MockXXXX)
+// 関数内でEXPECTを実行するようにテストケースを定義し、
+//    "case1": {
+//      prepareMock: func(m *mock.MockXXXX){
+//        m.EXPECT().Func(1,2,gomock.Any()).Return("ok")
+//      },
+// テストループでそれを呼ぶ際に、生成したモックにprepare経由でEXPECTを適用する
+//      m := mock.NewXXXX(ctrl)
+//      tt.prepareMock(m)
+// ただ、EXPECTしたのに呼ばれないとmissing call(s)で失敗するので
+// 呼ぶことが確実なモックだけセットアップする
+//
+
 func TestAddTask(t *testing.T) {
   t.Parallel()
 
@@ -32,12 +58,15 @@ func TestAddTask(t *testing.T) {
     rspFile string
   }
 
-  // これ名前をtestsにしない方がよくないか
   tests := map[string]struct {
+    prepareMock func(m *mock.MockAddTaskService)
     reqFile string
     want    want
   }{
     "ok": {
+      prepareMock: func(m *mock.MockAddTaskService){
+        m.EXPECT().AddTask(gomock.Any(), gomock.Any()).Return(&entity.Task{ID: 1}, nil)
+      },
       reqFile: "testdata/add_task/ok_req.json.golden",
       want: want {
         status: http.StatusOK,
@@ -45,6 +74,9 @@ func TestAddTask(t *testing.T) {
       },
     },
     "badRequest": {
+      prepareMock: func(m *mock.MockAddTaskService){
+        // AddTaskが呼ばれないテストなので、EXPECT()しない
+      },
       reqFile: "testdata/add_task/bad_req.json.golden",
       want: want {
         status: http.StatusBadRequest,
@@ -65,10 +97,14 @@ func TestAddTask(t *testing.T) {
         bytes.NewReader(testutil.LoadFile(t, tt.reqFile)),
       )
 
+      ctrl := gomock.NewController(t)
+      defer ctrl.Finish()
+
+      m := mock.NewMockAddTaskService(ctrl)
+      tt.prepareMock(m)
+
       sut := AddTask{
-        Store: &store.TaskStore{
-          Tasks: map[entity.TaskID]*entity.Task{},
-        },
+        Service: m,
         Validator: validator.New(),
       }
       sut.ServeHTTP(w, r)

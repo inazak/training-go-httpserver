@@ -2,6 +2,49 @@
 
 ## 履歴
 
+### v0.0.6
+
+- ハンドラにDBとのIOをserviceパッケージ経由で紐付け
+- gomockでのモック生成、モックを使ったテスト
+- clockをtime.Timeではなくstringに変更
+- handler は store ではなく、Serviceインターフェイスを利用する
+
+
+gomock使うために
+```
+go install github.com/golang/mock/mockgen@v1.6.0
+```
+
+この辺はもう分かりにくいので書き出すと
+```
+handler パッケージ
+  service.go に AddTaskService などが interface として定義されており
+  これらの実装は service パッケージの add_task.go など
+
+service パッケージ
+  interface.go TaskAdder などがinterfaceとして定義されており
+  これらの実装は storeパッケージのデータベースI/O
+
+
+handler.AddTaskService = (service.AddTask)AddTask
+service.TaskAddr = (store.Repository)AddTask
+となっているけど、
+
+service/add_task.go で
+  struct AddTask { store.Execer, TaskAdder } を定義していて
+  そのAddTaskのメソッドとして、AddTaskを定義していて、
+  メソッド内で TaskAdderつまり store.RepositoryのAddTaskを実行している
+    func (a *AddTask) AddTask(){ ... Taskadder.AddTask(ctx,db,..) ... }
+  名前の使い方が分かりにくいレベルを超えている
+  
+mux.go でこうなっているのも重すぎる
+  r := store.Repository{}
+  at := &handler.AddTask{
+    Service: &service.AddTask{ *sqlx.DB, &r }
+  }
+```
+
+
 ### v0.0.5
 
 - sqlite3をgolang-migrateでUPする
@@ -13,14 +56,8 @@
 ```
 repository.go にある New() は、*sqlx.DB を返す、
 それとは別に Repository構造の定義があり、これは Clocker を持っているだけ
-
 ```
 
-直すべき点
-
-```
-
-```
 
 ### v0.0.4
 

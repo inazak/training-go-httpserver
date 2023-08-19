@@ -3,15 +3,13 @@ package handler
 import (
   "encoding/json"
   "net/http"
-  "time"
   "github.com/go-playground/validator/v10"
   "github.com/inazak/training-go-httpserver/entity"
-  "github.com/inazak/training-go-httpserver/store"
 )
 
-// タスク操作をする store.TaskStore をラップしてハンドラを定義
+// Service を使うように変更
 type AddTask struct {
-  Store     *store.TaskStore
+  Service   AddTaskService
   Validator *validator.Validate
 }
 
@@ -36,21 +34,15 @@ func (at *AddTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
   }
 
   // JSONが要件を満たすかチェック
-  err := at.Validator.Struct(b)
-  if err != nil {
+  if err := at.Validator.Struct(b) ; err != nil {
     RespondJSON(ctx, w, &ErrResponse{
       Message: err.Error(),
     }, http.StatusBadRequest)
     return
   }
 
-  // 新規のタスクを作成
-  t := &entity.Task{
-    Title: b.Title,
-    Status: entity.TaskStatusTodo,
-    Created: time.Now(),
-  }
-  id, err := store.Tasks.Add(t)
+  // Serviceから新規タスクの登録処理
+  t, err := at.Service.AddTask(ctx, b.Title)
   if err != nil {
     RespondJSON(ctx, w, &ErrResponse{
       Message: err.Error(),
@@ -61,9 +53,7 @@ func (at *AddTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
   // 正常な場合はIDを返す
   rsp := struct{
     ID entity.TaskID `json:"id"`
-  }{ ID: id }
+  }{ ID: t.ID }
   RespondJSON(ctx, w ,rsp, http.StatusOK)
 }
-
-
 

@@ -12,25 +12,27 @@ import (
   "github.com/inazak/training-go-httpserver/clock"
 )
 
+// Closeの対応のため、もともとの実装を変更した
 type DB struct {
   SqlDB  *sql.DB
   SqlxDB *sqlx.DB
 }
 
+// 本当に sqlx.DB の Close だけではダメなのだろうか
 func (d *DB) Close() {
   if d.SqlDB  != nil { d.SqlDB.Close() }
   if d.SqlxDB != nil { d.SqlxDB.Close() }
 }
 
 
-// 二つ目の戻り値は *sql.DB.Close を実行する関数を返す
+// この名前もNewはいまいち、あと store.go でないのも分かりにくい
 func New(ctx context.Context, cfg *config.Config) (*DB, error) {
 
   db := &DB{}
 
   sqldb, err := sql.Open("sqlite3", fmt.Sprintf("%s?_foreign_keys=1", cfg.DBPath))
   if err != nil {
-    return nil, err
+    return db, err
   }
   db.SqlDB = sqldb
 

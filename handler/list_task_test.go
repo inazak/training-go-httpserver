@@ -5,8 +5,9 @@ import (
   "net/http/httptest"
   "testing"
   "github.com/inazak/training-go-httpserver/entity"
-  "github.com/inazak/training-go-httpserver/store"
   "github.com/inazak/training-go-httpserver/testutil"
+  "github.com/inazak/training-go-httpserver/mock"
+  "github.com/golang/mock/gomock"
 )
 
 func TestListTask(t *testing.T) {
@@ -18,10 +19,18 @@ func TestListTask(t *testing.T) {
 
   // これ名前をtestsにしない方がよくないか
   tests := map[string]struct {
+    prepareMock func(m *mock.MockListTasksService)
     tasks map[entity.TaskID]*entity.Task
     want  want
   }{
     "ok": {
+      prepareMock: func(m *mock.MockListTasksService){
+        // 結果がこの順序通りかどうかは、保証はできないはず
+        m.EXPECT().ListTasks(gomock.Any()).Return(entity.Tasks{
+          { ID: 1, Title: "test1", Status: entity.TaskStatusTodo, },
+          { ID: 2, Title: "test2", Status: entity.TaskStatusDone, },
+        }, nil)
+      },
       tasks: map[entity.TaskID]*entity.Task{
         1: {
           ID:     1,
@@ -40,6 +49,9 @@ func TestListTask(t *testing.T) {
       },
     },
     "empty": {
+      prepareMock: func(m *mock.MockListTasksService){
+        m.EXPECT().ListTasks(gomock.Any()).Return(entity.Tasks{}, nil)
+      },
       tasks: map[entity.TaskID]*entity.Task{},
       want: want {
         status: http.StatusOK,
@@ -56,7 +68,13 @@ func TestListTask(t *testing.T) {
       w := httptest.NewRecorder()
       r := httptest.NewRequest(http.MethodGet, "/tasks", nil)
 
-      sut := ListTask{ Store: &store.TaskStore{ Tasks: tt.tasks } }
+      ctrl := gomock.NewController(t)
+      defer ctrl.Finish()
+
+      m := mock.NewMockListTasksService(ctrl)
+      tt.prepareMock(m)
+
+      sut := ListTask{ Service: m }
       sut.ServeHTTP(w, r)
 
       resp := w.Result()

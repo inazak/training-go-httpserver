@@ -3,12 +3,11 @@ package handler
 import (
   "net/http"
   "github.com/inazak/training-go-httpserver/entity"
-  "github.com/inazak/training-go-httpserver/store"
 )
 
-// タスク操作をする store.TaskStore をラップしてハンドラを定義
+// Serviceを利用する形に変更
 type ListTask struct {
-  Store     *store.TaskStore
+  Service ListTasksService
 }
 
 // レスポンスで使う用のJSON構造
@@ -24,9 +23,15 @@ func (lt *ListTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
   // ここは単純なGETと呼ばれることを想定しており
   // bodyのチェックが何もなくて、いきなり応答を作成する
 
-  tasks := lt.Store.All()
-  rsp := []task{}
+  tasks, err := lt.Service.ListTasks(ctx)
+	if err != nil {
+		RespondJSON(ctx, w, &ErrResponse{
+			Message: err.Error(),
+		}, http.StatusInternalServerError)
+		return
+	}
 
+  rsp := []task{}
   for _, t := range tasks {
     rsp = append(rsp, task{
       ID:     t.ID,
@@ -37,6 +42,4 @@ func (lt *ListTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
   RespondJSON(ctx, w, rsp, http.StatusOK)
 }
-
-
 

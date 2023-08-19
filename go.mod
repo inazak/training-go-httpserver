@@ -7,6 +7,7 @@ require (
 	github.com/go-chi/chi/v5 v5.0.10
 	github.com/go-playground/validator/v10 v10.14.1
 	github.com/golang-migrate/migrate/v4 v4.16.2
+	github.com/golang/mock v1.6.0
 	github.com/google/go-cmp v0.5.9
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/mattn/go-sqlite3 v1.14.17
