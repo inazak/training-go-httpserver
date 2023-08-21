@@ -1,32 +1,46 @@
-package main
+package server
 
 import (
   "context"
   "fmt"
-  "log"
   "net"
   "net/http"
   "os"
   "os/signal"
   "syscall"
   "golang.org/x/sync/errgroup"
+	"github.com/go-kit/log"
+	"github.com/go-kit/log/level"
 )
 
-type Server struct {
-  srv *http.Server
-  l   net.Listener
+type HttpServer struct {
+  *http.Server
+  lsnr net.Listener
 }
 
-// mux は multiplexer の略
-func NewServer(l net.Listener, mux http.Handler) *Server {
-  return &Server {
-    srv: &http.Server{ Handler: mux},
-    l: l,
+func NewHttpServer(mux http.Handler) *HttpServer {
+  return &HttpServer {
+    Server: &http.Server{ Handler: mux },
   }
 }
 
+func (hs *HttpServer) Listen(port int) error {
 
-func (s *Server) Run(ctx context.Context) error {
+  // ポート番号に0を選択すると利用可能なポートを動的に選択する
+  l, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+  if err != nil {
+    return fmt.Errorf("failed to listen port: %w", err)
+  }
+
+  hs.lsnr = l
+  return nil
+}
+
+func (hs *HttpServer) Run(ctx context.Context, logger log.Logger) error {
+
+  if hs.lsnr == nil {
+    return fmt.Errorf("need to listen first")
+  }
 
   // シグナルを受け取るcontext、CTRL-Cを受け取るとDoneが呼ばれる
   ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
@@ -36,23 +50,21 @@ func (s *Server) Run(ctx context.Context) error {
 
   // 別goroutineでhttpserverを起動する
   eg.Go( func() error {
-    if err := s.srv.Serve(s.l); err != nil {
+    if err := hs.Serve(hs.lsnr); err != nil {
       // ErrServerClosedは http.Server.Shutdown()が正常終了なので、異常ではない
       if err != http.ErrServerClosed {
-        log.Printf("failed to close: %v", err)
         return err
       }
     }
     return nil
   })
 
-  url := fmt.Sprintf("http://%s", s.l.Addr().String())
-  log.Printf("start with: %s", url)
+  level.Info(logger).Log("msg", "start server", "addr", hs.lsnr.Addr().String())
 
   // run関数の呼び出し元がcontextを使って終了を指示した場合
   <-ctx.Done()
-  if err := s.srv.Shutdown(context.Background()); err != nil {
-    log.Printf("failed to shutdown: %v", err)
+  if err := hs.Shutdown(context.Background()); err != nil {
+    level.Error(logger).Log("msg", "failed to shutdown", "err", err)
   }
 
   return eg.Wait() // 戻り値は eg.Go()で起動していた無名関数の戻り値

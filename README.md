@@ -2,6 +2,21 @@
 
 ## 履歴
 
+### v0.0.6 から再構成
+
+- go-kit/log の導入
+- パッケージの再構成
+
+```
+cmd
+common
+handler
+service
+storage
+```
+
+
+
 ### v0.0.6
 
 - ハンドラにDBとのIOをserviceパッケージ経由で紐付け

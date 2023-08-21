@@ -1,23 +1,18 @@
-package main
+package server
 
 import (
   "context"
   "fmt"
   "io"
-  "log"
-  "net"
   "net/http"
   "testing"
+	"github.com/go-kit/log"
   "golang.org/x/sync/errgroup"
 )
 
-func TestRun(t *testing.T) {
+var logger = log.NewNopLogger()
 
-  // ポート番号に0を選択すると利用可能なポートを動的に選択する
-  l, err := net.Listen("tcp", "localhost:0")
-  if err != nil {
-    log.Fatalf("failed to listen port: %v", err)
-  }
+func TestRun(t *testing.T) {
 
   // 後でキャンセルするために生成
   ctx, cancel := context.WithCancel(context.Background())
@@ -26,16 +21,22 @@ func TestRun(t *testing.T) {
     fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
   })
 
+  hs := NewHttpServer(mux)
+
+  // ポート番号に0を選択すると利用可能なポートを動的に選択する
+  err := hs.Listen(0)
+  if err != nil {
+    t.Fatalf("failed to listen: %v", err)
+  }
+
   // run関数を別goroutineで起動しておく
   eg, ctx := errgroup.WithContext(ctx)
   eg.Go( func() error {
-    s := NewServer(l, mux)
-    return s.Run(ctx)
+    return hs.Run(ctx, logger)
   })
 
   msg := "message"
-  url := fmt.Sprintf("http://%s/%s", l.Addr().String(), msg)
-  log.Printf("try request to %q", url)
+  url := fmt.Sprintf("http://%s/%s", hs.lsnr.Addr().String(), msg)
 
   rsp, err := http.Get(url)
   if err != nil {
