@@ -2,17 +2,58 @@
 
 ## 履歴
 
-### v0.0.6 から再構成
+### v0.0.12
 
+- reposigory/database/sqlite の追加
+- model の追加
+
+```
+cmd
+  main.go
+
+common
+  clock
+    clock.go
+  config
+    config.go
+  logging
+    logging.go
+
+model
+  task.go
+
+repository
+  interface.go
+  simpledb.go
+  database
+    interface.go
+    sqlite
+      migrate.go
+      sqlite.go
+
+server
+  server.go
+```
+
+
+### v0.0.11
+
+- v0.0.6 から再構成
 - go-kit/log の導入
 - パッケージの再構成
 
 ```
 cmd
+  main.go
+
 common
-handler
-service
-storage
+  config
+    config.go
+  logging
+    logging.go
+
+server
+  server.go
 ```
 
 
