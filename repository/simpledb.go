@@ -12,7 +12,7 @@ type SimpleDB struct {
   database.Database
 }
 
-func (sd *SimpleDB) SetTask(ctx context.Context, task *model.Task) error {
+func (sd *SimpleDB) InsertTask(ctx context.Context, task *model.Task) error {
   task.Created  = clock.NowString()
   task.Modified = task.Created
 
@@ -32,7 +32,7 @@ func (sd *SimpleDB) SetTask(ctx context.Context, task *model.Task) error {
   return nil
 }
 
-func (sd *SimpleDB) GetTaskList(ctx context.Context) (model.TaskList, error) {
+func (sd *SimpleDB) SelectTaskList(ctx context.Context) (model.TaskList, error) {
   tasklist := model.TaskList{}
 
   // sqlxにより構造体の名前に結果がマッピングされる

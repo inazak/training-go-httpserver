@@ -41,13 +41,13 @@ func TestUseSqliteDB(t *testing.T) {
   sd := &SimpleDB{ Database: db }
 
   for i, p := range ps {
-    err = sd.SetTask(ctx, p)
+    err = sd.InsertTask(ctx, p)
     if err != nil {
       t.Errorf("failed no.%d AddTask: %v", i, err)
     }
   }
 
-  rs, err := sd.GetTaskList(ctx)
+  rs, err := sd.SelectTaskList(ctx)
   if err != nil {
     t.Errorf("failed ListTask: %v", err)
   }

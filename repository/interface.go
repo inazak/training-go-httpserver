@@ -6,7 +6,7 @@ import (
 )
 
 type Repository interface {
-  SetTask(ctx context.Context, task *model.Task) error
-  GetTaskList(ctx context.Context) (*model.TaskList, error)
+  InsertTask(ctx context.Context, task *model.Task) error
+  SelectTaskList(ctx context.Context) (*model.TaskList, error)
 }
 
