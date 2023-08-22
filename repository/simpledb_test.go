@@ -12,7 +12,7 @@ import (
 
 var testDBPath = "./todo_test.db"
 
-func Test1(t *testing.T) {
+func TestUseSqliteDB(t *testing.T) {
 
 	t.Setenv("TODO_DBPATH", testDBPath)
 
