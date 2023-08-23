@@ -9,7 +9,7 @@ import (
 	"github.com/go-kit/log/level"
   "github.com/inazak/training-go-httpserver/common/config"
   "github.com/inazak/training-go-httpserver/common/logging"
-  "github.com/inazak/training-go-httpserver/server"
+  "github.com/inazak/training-go-httpserver/httpserver"
 )
 
 func run(ctx context.Context, logger log.Logger) error {
@@ -23,7 +23,7 @@ func run(ctx context.Context, logger log.Logger) error {
     fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
   })
 
-  hs := server.NewHttpServer(mux)
+  hs := httpserver.NewHttpServer(mux)
   err = hs.Listen(conf.Port)
   if err != nil {
     level.Error(logger).Log("msg", "failed to listen port", "port", conf.Port, "err", err)

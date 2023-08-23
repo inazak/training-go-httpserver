@@ -2,9 +2,16 @@
 
 ## 履歴
 
+### v0.0.13
+
+- service の追加
+- httpserver/handler の追加
+
+
+
 ### v0.0.12
 
-- reposigory/database/sqlite の追加
+- repository/database/sqlite の追加
 - model の追加
 
 ```
