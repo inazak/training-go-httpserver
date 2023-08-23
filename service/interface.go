@@ -2,17 +2,16 @@ package service
 
 import (
   "context"
-
-  "github.com/inazak/training-go-httpserver/entity"
-  "github.com/inazak/training-go-httpserver/store"
+  "github.com/inazak/training-go-httpserver/model"
 )
 
-type TaskAdder interface {
-  AddTask(ctx context.Context, db store.Execer, t *entity.Task) error
+// golang/mock はすでに archived になっている
+// インストールは go install github.com/golang/mock/mockgen@v1.6.0
+// 下記の通り書いてから go generate ./handler/service.go でモックを生成
+
+//go:generate mockgen -source=$GOFILE -package=mock -destination=../common/mock/service_$GOFILE
+type Service interface {
+  HealthCheck(ctx context.Context) error
+  GetTaskList(ctx context.Context) (model.TaskList, error)
+  AddTask(ctx context.Context, title string) (*model.Task, error)
 }
-
-type TaskLister interface {
-  ListTasks(ctx context.Context, db store.Queryer) (entity.Tasks, error)
-}
-
-

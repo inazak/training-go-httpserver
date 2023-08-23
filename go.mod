@@ -5,7 +5,8 @@ go 1.18
 require (
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/go-chi/chi/v5 v5.0.10
-	github.com/go-playground/validator/v10 v10.14.1
+	github.com/go-kit/log v0.2.1
+	github.com/go-playground/validator/v10 v10.15.1
 	github.com/golang-migrate/migrate/v4 v4.16.2
 	github.com/golang/mock v1.6.0
 	github.com/google/go-cmp v0.5.9
@@ -17,6 +18,7 @@ require (
 
 require (
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
+	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
