@@ -36,20 +36,20 @@ func WriteJSONResponse(ctx context.Context, w http.ResponseWriter, body any, sta
   return nil
 }
 
-func AssertJSON(t *testing.T, want, got []byte) {
-  // ヘルパーメソッドとしてマーク、このメソッドの行番号を出さない
-  t.Helper()
+func AssertJSON(want, got []byte) error {
 
   var jw, jg any
   if err := json.Unmarshal(want, &jw); err != nil {
-    t.Fatalf("cannot unmarshal want %q: %v", want, err)
+    return fmt.Errorf("cannot unmarshal want %q: %v", want, err)
   }
   if err := json.Unmarshal(got, &jg); err != nil {
-    t.Fatalf("cannot unmarshal got %q: %v", got, err)
+    return fmt.Errorf("cannot unmarshal got %q: %v", got, err)
   }
   if diff := cmp.Diff(jg, jw); diff != "" {
-    t.Errorf("got differs: (-got, +want)\n%s", diff)
+    return fmt.Errorf("got differs: (-got, +want)\n%s", diff)
   }
+
+  return nil
 }
 
 func AssertResponse(t *testing.T, got *http.Response, status int, body []byte) {
@@ -67,6 +67,9 @@ func AssertResponse(t *testing.T, got *http.Response, status int, body []byte) {
   if len(gb) == 0 && len(body) == 0 {
     return
   }
-  AssertJSON(t, body, gb)
+  err = AssertJSON(body, gb)
+  if err != nil {
+    t.Fatal(err)
+  }
 }
 

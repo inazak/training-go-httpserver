@@ -1,18 +1,17 @@
-package handler
+package api
 
 import (
   "testing"
   "bytes"
   "net/http"
   "net/http/httptest"
-  "github.com/go-playground/validator/v10"
   "github.com/inazak/training-go-httpserver/common/jsonhelper"
   "github.com/inazak/training-go-httpserver/common/mock"
   "github.com/inazak/training-go-httpserver/model"
   "github.com/golang/mock/gomock"
 )
 
-func TestAddTask(t *testing.T) {
+func TestServeAddTask(t *testing.T) {
   t.Parallel()
 
   ps := map[string]struct {
@@ -57,11 +56,8 @@ func TestAddTask(t *testing.T) {
       m := mock.NewMockService(ctrl)
       p.prepareMock(m)
 
-      sut := TaskHandler{
-        serv: m,
-        vali: validator.New(),
-      }
-      sut.ServeHTTP(w, r)
+      h := NewHandler(m)
+      h.ServeAddTask(w, r)
 
       resp := w.Result()
       jsonhelper.AssertResponse(t, resp, p.status, []byte(p.response))

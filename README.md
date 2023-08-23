@@ -5,8 +5,8 @@
 ### v0.0.13
 
 - service の追加
-- httpserver/handler の追加
-
+- httpserver/handler/api の追加
+- common/mock の生成
 
 
 ### v0.0.12
@@ -14,55 +14,12 @@
 - repository/database/sqlite の追加
 - model の追加
 
-```
-cmd
-  main.go
-
-common
-  clock
-    clock.go
-  config
-    config.go
-  logging
-    logging.go
-
-model
-  task.go
-
-repository
-  interface.go
-  simpledb.go
-  database
-    interface.go
-    sqlite
-      migrate.go
-      sqlite.go
-
-server
-  server.go
-```
-
 
 ### v0.0.11
 
 - v0.0.6 から再構成
 - go-kit/log の導入
 - パッケージの再構成
-
-```
-cmd
-  main.go
-
-common
-  config
-    config.go
-  logging
-    logging.go
-
-server
-  server.go
-```
-
 
 
 ### v0.0.6
@@ -169,5 +126,12 @@ AddTask, ListTask があり、これは
 ## 参考
 
 - 詳解GO言語Webアプリケーション開発 9784863543720
+
+を参考にして始めたが、途中 v0.0.11から全然違う道を進んでしまった
+
+
+## TODO
+
+- 今回使ったパッケージの使用例部分の抜粋と説明の抜き書き
 
 

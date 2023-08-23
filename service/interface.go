@@ -11,6 +11,7 @@ import (
 
 //go:generate mockgen -source=$GOFILE -package=mock -destination=../common/mock/service_$GOFILE
 type Service interface {
+  HealthCheck(ctx context.Context) error
   GetTaskList(ctx context.Context) (model.TaskList, error)
   AddTask(ctx context.Context, title string) (*model.Task, error)
 }
