@@ -10,10 +10,10 @@ var (
 )
 
 type Handler struct {
-  backend service.TodoService
+  backend service.Service
 }
 
-func NewHandler(svc service.TodoService) *Handler {
+func NewHandler(svc service.Service) *Handler {
   return &Handler{
     backend: svc,
   }

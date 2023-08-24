@@ -11,7 +11,7 @@ func TestMux(t *testing.T) {
   ctrl := gomock.NewController(t)
   defer ctrl.Finish()
 
-  m := mock.NewMockTodoService(ctrl)
+  m := mock.NewMockService(ctrl)
   mux := NewMux(m)
 
   if mux == nil {

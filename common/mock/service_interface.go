@@ -12,31 +12,31 @@ import (
 	model "github.com/inazak/training-go-httpserver/model"
 )
 
-// MockTodoService is a mock of TodoService interface.
-type MockTodoService struct {
+// MockService is a mock of Service interface.
+type MockService struct {
 	ctrl     *gomock.Controller
-	recorder *MockTodoServiceMockRecorder
+	recorder *MockServiceMockRecorder
 }
 
-// MockTodoServiceMockRecorder is the mock recorder for MockTodoService.
-type MockTodoServiceMockRecorder struct {
-	mock *MockTodoService
+// MockServiceMockRecorder is the mock recorder for MockService.
+type MockServiceMockRecorder struct {
+	mock *MockService
 }
 
-// NewMockTodoService creates a new mock instance.
-func NewMockTodoService(ctrl *gomock.Controller) *MockTodoService {
-	mock := &MockTodoService{ctrl: ctrl}
-	mock.recorder = &MockTodoServiceMockRecorder{mock}
+// NewMockService creates a new mock instance.
+func NewMockService(ctrl *gomock.Controller) *MockService {
+	mock := &MockService{ctrl: ctrl}
+	mock.recorder = &MockServiceMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockTodoService) EXPECT() *MockTodoServiceMockRecorder {
+func (m *MockService) EXPECT() *MockServiceMockRecorder {
 	return m.recorder
 }
 
 // AddTask mocks base method.
-func (m *MockTodoService) AddTask(ctx context.Context, title string) (*model.Task, error) {
+func (m *MockService) AddTask(ctx context.Context, title string) (*model.Task, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddTask", ctx, title)
 	ret0, _ := ret[0].(*model.Task)
@@ -45,13 +45,13 @@ func (m *MockTodoService) AddTask(ctx context.Context, title string) (*model.Tas
 }
 
 // AddTask indicates an expected call of AddTask.
-func (mr *MockTodoServiceMockRecorder) AddTask(ctx, title interface{}) *gomock.Call {
+func (mr *MockServiceMockRecorder) AddTask(ctx, title interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTask", reflect.TypeOf((*MockTodoService)(nil).AddTask), ctx, title)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTask", reflect.TypeOf((*MockService)(nil).AddTask), ctx, title)
 }
 
 // GetTaskList mocks base method.
-func (m *MockTodoService) GetTaskList(ctx context.Context) (model.TaskList, error) {
+func (m *MockService) GetTaskList(ctx context.Context) (model.TaskList, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetTaskList", ctx)
 	ret0, _ := ret[0].(model.TaskList)
@@ -60,13 +60,13 @@ func (m *MockTodoService) GetTaskList(ctx context.Context) (model.TaskList, erro
 }
 
 // GetTaskList indicates an expected call of GetTaskList.
-func (mr *MockTodoServiceMockRecorder) GetTaskList(ctx interface{}) *gomock.Call {
+func (mr *MockServiceMockRecorder) GetTaskList(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTaskList", reflect.TypeOf((*MockTodoService)(nil).GetTaskList), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTaskList", reflect.TypeOf((*MockService)(nil).GetTaskList), ctx)
 }
 
 // HealthCheck mocks base method.
-func (m *MockTodoService) HealthCheck(ctx context.Context) error {
+func (m *MockService) HealthCheck(ctx context.Context) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "HealthCheck", ctx)
 	ret0, _ := ret[0].(error)
@@ -74,7 +74,7 @@ func (m *MockTodoService) HealthCheck(ctx context.Context) error {
 }
 
 // HealthCheck indicates an expected call of HealthCheck.
-func (mr *MockTodoServiceMockRecorder) HealthCheck(ctx interface{}) *gomock.Call {
+func (mr *MockServiceMockRecorder) HealthCheck(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HealthCheck", reflect.TypeOf((*MockTodoService)(nil).HealthCheck), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HealthCheck", reflect.TypeOf((*MockService)(nil).HealthCheck), ctx)
 }

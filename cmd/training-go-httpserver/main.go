@@ -40,10 +40,10 @@ func runHttpServer(logger log.Logger) error {
   defer db.Close()
 
   rep := repository.NewSimpleDB(db)
-  svc := service.NewSimpleTodoService(ctx, rep)
+  svc := service.NewTodoService(ctx, rep, logger)
   mux := httpserver.NewMux(svc)
-  hs  := httpserver.NewHttpServer(mux)
+  hsv := httpserver.NewHttpServer(mux)
 
-  return hs.Run(ctx, conf.Port, logger)
+  return hsv.Run(ctx, conf.Port, logger)
 }
 

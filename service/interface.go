@@ -10,7 +10,7 @@ import (
 // 下記の通り書いてから go generate ./service.go でモックを生成
 
 //go:generate mockgen -source=$GOFILE -package=mock -destination=../common/mock/service_$GOFILE
-type TodoService interface {
+type Service interface {
   HealthCheck(ctx context.Context) error
   GetTaskList(ctx context.Context) (model.TaskList, error)
   AddTask(ctx context.Context, title string) (*model.Task, error)

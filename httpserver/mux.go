@@ -12,11 +12,13 @@ import (
 // GET /users と POST /users といったメソッドの違いのハンドリング
 // が難しい
 
-func NewMux(svc service.TodoService) http.Handler {
+func NewMux(svc service.Service) http.Handler {
   mux := chi.NewRouter()
 
   apiHandler := api.NewHandler(svc)
   mux.HandleFunc("/health", apiHandler.ServeHealthCheck)
+  mux.Get("/task", apiHandler.ServeGetTaskList)
+  mux.Post("/task", apiHandler.ServeAddTask)
 
   return mux
 }

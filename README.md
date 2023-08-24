@@ -2,6 +2,12 @@
 
 ## 履歴
 
+### v0.0.14
+
+- httpserver と service の結合
+- main.go の最低限の動作確認
+
+
 ### v0.0.13
 
 - service の追加

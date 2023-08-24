@@ -19,9 +19,9 @@ func (h *Handler) ServeHealthCheck(w http.ResponseWriter, r *http.Request) {
   }
 
   rsp := struct{
-    status string `json:"status"`
+    Status string `json:"status"`
   }{
-    status: "ok",
+    Status: "ok",
   }
   _ = jsonhelper.WriteJSONResponse(ctx, w ,rsp, http.StatusOK)
 }
