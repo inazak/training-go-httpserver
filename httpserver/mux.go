@@ -1,7 +1,6 @@
 package httpserver
 
 import (
-  "context"
   "net/http"
   "github.com/go-chi/chi/v5"
   "github.com/inazak/training-go-httpserver/service"
@@ -13,7 +12,7 @@ import (
 // GET /users と POST /users といったメソッドの違いのハンドリング
 // が難しい
 
-func NewMux(ctx context.Context, svc service.Service) http.Handler {
+func NewMux(svc service.TodoService) http.Handler {
   mux := chi.NewRouter()
 
   apiHandler := api.NewHandler(svc)

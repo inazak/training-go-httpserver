@@ -38,7 +38,7 @@ func TestUseSqliteDB(t *testing.T) {
   }
 
   ctx := context.Background()
-  sd := &SimpleDB{ Database: db }
+  sd := NewSimpleDB(db)
 
   for i, p := range ps {
     err = sd.InsertTask(ctx, p)

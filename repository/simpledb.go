@@ -12,6 +12,12 @@ type SimpleDB struct {
   database.Database
 }
 
+func NewSimpleDB(db database.Database) *SimpleDB {
+  return &SimpleDB {
+    Database: db,
+  }
+}
+
 func (sd *SimpleDB) InsertTask(ctx context.Context, task *model.Task) error {
   task.Created  = clock.NowString()
   task.Modified = task.Created

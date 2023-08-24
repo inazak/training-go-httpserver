@@ -2,42 +2,48 @@ package main
 
 import (
   "context"
-  "fmt"
-  "net/http"
   "os"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
   "github.com/inazak/training-go-httpserver/common/config"
   "github.com/inazak/training-go-httpserver/common/logging"
   "github.com/inazak/training-go-httpserver/httpserver"
+  "github.com/inazak/training-go-httpserver/service"
+  "github.com/inazak/training-go-httpserver/repository"
+  "github.com/inazak/training-go-httpserver/repository/database/sqlite"
 )
 
-func run(ctx context.Context, logger log.Logger) error {
+func main() {
+  logger := logging.NewLogger()
+
+  if err := runHttpServer(logger); err != nil {
+    level.Error(logger).Log("msg", "failed to runHttpServer", "err", err)
+    os.Exit(1)
+  }
+}
+
+
+func runHttpServer(logger log.Logger) error {
+
+  ctx := context.Background()
 
   conf, err := config.NewConfig()
   if err != nil {
     return err
   }
 
-  mux := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
-  })
-
-  hs := httpserver.NewHttpServer(mux)
-  err = hs.Listen(conf.Port)
+  level.Info(logger).Log("msg", "open sqlite db")
+  db, err := sqlite.NewDatabase(ctx, conf)
   if err != nil {
-    level.Error(logger).Log("msg", "failed to listen port", "port", conf.Port, "err", err)
+    return err
   }
+  defer db.Close()
 
-  return hs.Run(ctx, logger)
-}
+  rep := repository.NewSimpleDB(db)
+  svc := service.NewSimpleTodoService(ctx, rep)
+  mux := httpserver.NewMux(svc)
+  hs  := httpserver.NewHttpServer(mux)
 
-func main() {
-  logger := logging.NewLogger()
-
-  if err := run(context.Background(), logger); err != nil {
-    level.Error(logger).Log("msg", "failed server.run", "err", err)
-    os.Exit(1)
-  }
+  return hs.Run(ctx, conf.Port, logger)
 }
 

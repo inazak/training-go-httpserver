@@ -15,13 +15,13 @@ func TestServeAddTask(t *testing.T) {
   t.Parallel()
 
   ps := map[string]struct {
-    prepareMock func(m *mock.MockService)
+    prepareMock func(m *mock.MockTodoService)
     request     string
     response    string
     status      int
   }{
     "ok": {
-      prepareMock: func(m *mock.MockService){
+      prepareMock: func(m *mock.MockTodoService){
         m.EXPECT().AddTask(gomock.Any(), gomock.Any()).Return(&model.Task{ID: 1}, nil)
       },
       request: `{ "title": "ok" }`,
@@ -29,7 +29,7 @@ func TestServeAddTask(t *testing.T) {
       status: http.StatusOK,
     },
     "badRequest": {
-      prepareMock: func(m *mock.MockService){
+      prepareMock: func(m *mock.MockTodoService){
         // AddTaskが呼ばれないテストなので、EXPECT()しない
       },
       request: `{ "xxx": "ng" }`,
@@ -53,7 +53,7 @@ func TestServeAddTask(t *testing.T) {
       ctrl := gomock.NewController(t)
       defer ctrl.Finish()
 
-      m := mock.NewMockService(ctrl)
+      m := mock.NewMockTodoService(ctrl)
       p.prepareMock(m)
 
       h := NewHandler(m)

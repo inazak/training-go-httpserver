@@ -15,7 +15,6 @@ import (
 
 type HttpServer struct {
   *http.Server
-  lsnr net.Listener
 }
 
 func NewHttpServer(mux http.Handler) *HttpServer {
@@ -24,33 +23,23 @@ func NewHttpServer(mux http.Handler) *HttpServer {
   }
 }
 
-func (hs *HttpServer) Listen(port int) error {
-
-  // ポート番号に0を選択すると利用可能なポートを動的に選択する
-  l, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
-  if err != nil {
-    return fmt.Errorf("failed to listen port: %w", err)
-  }
-
-  hs.lsnr = l
-  return nil
-}
-
-func (hs *HttpServer) Run(ctx context.Context, logger log.Logger) error {
-
-  if hs.lsnr == nil {
-    return fmt.Errorf("need to listen first")
-  }
+func (hs *HttpServer) Run(ctx context.Context, port int, logger log.Logger) error {
 
   // シグナルを受け取るcontext、CTRL-Cを受け取るとDoneが呼ばれる
   ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
   defer stop()
 
+  // ポート番号に0を選択すると利用可能なポートを動的に選択する
+  l, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+  if err != nil {
+    return err
+  }
+
   eg, ctx := errgroup.WithContext(ctx)
 
   // 別goroutineでhttpserverを起動する
   eg.Go( func() error {
-    if err := hs.Serve(hs.lsnr); err != nil {
+    if err := hs.Serve(l); err != nil {
       // ErrServerClosedは http.Server.Shutdown()が正常終了なので、異常ではない
       if err != http.ErrServerClosed {
         return err
@@ -59,7 +48,7 @@ func (hs *HttpServer) Run(ctx context.Context, logger log.Logger) error {
     return nil
   })
 
-  level.Info(logger).Log("msg", "start server", "addr", hs.lsnr.Addr().String())
+  level.Info(logger).Log("msg", "start server", "addr", l.Addr().String())
 
   // run関数の呼び出し元がcontextを使って終了を指示した場合
   <-ctx.Done()
