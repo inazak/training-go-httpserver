@@ -1,18 +1,16 @@
 package database
 
 import (
-  "context"
+	"context"
 )
 
 type Result interface {
-  LastInsertId() (int64, error)
-  RowsAffected() (int64, error)
+	LastInsertId() (int64, error)
+	RowsAffected() (int64, error)
 }
 
 type Database interface {
-  Close()
-  Select(ctx context.Context, dest interface{}, query string) error
-  NamedExec(ctx context.Context, query string, arg interface{}) (Result, error)
+	Close()
+	Select(ctx context.Context, dest interface{}, query string) error
+	NamedExec(ctx context.Context, query string, arg interface{}) (Result, error)
 }
-
-
