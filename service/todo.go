@@ -51,3 +51,19 @@ func (st *TodoService) AddTask(ctx context.Context, title string) (*model.Task, 
 	}
 	return task, nil
 }
+
+func (st *TodoService) AddUser(ctx context.Context, name string, password string, role string) (model.UserID, error) {
+
+	level.Info(st.logger).Log("msg", "in service.AddUser")
+	user := &model.User{
+		Name:     name,
+		Password: password,
+		Role:     role,
+	}
+	err := st.repo.InsertUser(ctx, user)
+	if err != nil {
+		level.Error(st.logger).Log("msg", "in repository.AddUser", "err", err)
+		return -1, err
+	}
+	return user.ID, nil
+}

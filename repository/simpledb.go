@@ -49,3 +49,24 @@ func (sd *SimpleDB) SelectTaskList(ctx context.Context) (model.TaskList, error) 
 	}
 	return tasklist, nil
 }
+
+func (sd *SimpleDB) InsertUser(ctx context.Context, user *model.User) error {
+	user.Created = clock.NowString()
+	user.Modified = user.Created
+
+	sql := `INSERT INTO user (name, password, role, created, modified) VALUES (:name, :password, :role, :created, :modified);`
+
+	//FIXME この動作はsqlxが前提となり、抽象を破壊している
+	result, err := sd.NamedExec(ctx, sql, user)
+	if err != nil {
+		return err
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return err
+	}
+
+	user.ID = model.UserID(id)
+	return nil
+}

@@ -19,6 +19,7 @@ func NewMux(svc service.Service) http.Handler {
 	mux.HandleFunc("/health", apiHandler.ServeHealthCheck)
 	mux.Get("/task", apiHandler.ServeGetTaskList)
 	mux.Post("/task", apiHandler.ServeAddTask)
+	mux.Post("/register", apiHandler.ServeAddUser)
 
 	return mux
 }

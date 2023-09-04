@@ -14,4 +14,5 @@ type Service interface {
 	HealthCheck(ctx context.Context) error
 	GetTaskList(ctx context.Context) (model.TaskList, error)
 	AddTask(ctx context.Context, title string) (*model.Task, error)
+	AddUser(ctx context.Context, name string, password string, role string) (model.UserID, error)
 }
