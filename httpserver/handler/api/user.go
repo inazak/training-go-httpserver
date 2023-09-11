@@ -7,12 +7,6 @@ import (
 	"net/http"
 )
 
-// FIXME これいまいち
-// レスポンスで使う用のJSON構造
-type user struct {
-	ID model.UserID `json:"id"`
-}
-
 func (h *Handler) ServeAddUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
