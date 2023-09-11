@@ -2,6 +2,14 @@
 
 ## 履歴
 
+### v0.0.16
+
+- register を追加
+
+### v0.0.15
+
+- go fmt する
+
 ### v0.0.14
 
 - httpserver と service の結合

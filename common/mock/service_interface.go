@@ -50,6 +50,21 @@ func (mr *MockServiceMockRecorder) AddTask(ctx, title interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTask", reflect.TypeOf((*MockService)(nil).AddTask), ctx, title)
 }
 
+// AddUser mocks base method.
+func (m *MockService) AddUser(ctx context.Context, name, password, role string) (model.UserID, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddUser", ctx, name, password, role)
+	ret0, _ := ret[0].(model.UserID)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddUser indicates an expected call of AddUser.
+func (mr *MockServiceMockRecorder) AddUser(ctx, name, password, role interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddUser", reflect.TypeOf((*MockService)(nil).AddUser), ctx, name, password, role)
+}
+
 // GetTaskList mocks base method.
 func (m *MockService) GetTaskList(ctx context.Context) (model.TaskList, error) {
 	m.ctrl.T.Helper()
