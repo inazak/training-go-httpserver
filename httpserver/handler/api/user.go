@@ -11,7 +11,7 @@ func (h *Handler) ServeAddUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var body struct {
-		Name     string `json:"name"     validate:"required"`
+		Username string `json:"username" validate:"required"`
 		Password string `json:"password" validate:"required"`
 		Role     string `json:"role"     validate:"required"`
 	}
@@ -37,7 +37,7 @@ func (h *Handler) ServeAddUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Serviceから新規ユーザーの登録処理
-	id, err := h.backend.AddUser(ctx, body.Name, body.Password, body.Role)
+	id, err := h.backend.AddUser(ctx, body.Username, body.Password, body.Role)
 	if err != nil {
 		_ = jsonhelper.WriteJSONResponse(
 			ctx,
