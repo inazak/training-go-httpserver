@@ -22,7 +22,7 @@ func (sd *SimpleDB) InsertTask(ctx context.Context, task *model.Task) error {
 	task.Created = clock.NowString()
 	task.Modified = task.Created
 
-	sql := `INSERT INTO task (title, status, created, modified) VALUES (:title, :status, :created, :modified);`
+	sql := `INSERT INTO task (userid, title, status, created, modified) VALUES (:userid, :title, :status, :created, :modified);`
 
 	//FIXME この動作はsqlxが前提となり、抽象を破壊している
 	result, err := sd.NamedExec(ctx, sql, task)

@@ -4,14 +4,17 @@ CREATE TABLE IF NOT EXISTS user (
   password TEXT NOT NULL,
   role     TEXT NOT NULL,
   created  TEXT NOT NULL,
-  modified TEXT NOT NULL
+  modified TEXT NOT NULL,
+  UNIQUE(name)
 );
 
 CREATE TABLE IF NOT EXISTS task (
   id       INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	userid   INTEGER NOT NULL,
   title    TEXT NOT NULL,
   status   TEXT NOT NULL,
   created  TEXT NOT NULL,
-  modified TEXT NOT NULL
+  modified TEXT NOT NULL,
+	FOREIGN KEY(userid) REFERENCES USER(id)
 );
 
