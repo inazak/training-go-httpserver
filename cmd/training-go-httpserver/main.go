@@ -32,14 +32,14 @@ func runHttpServer(logger log.Logger) error {
 	}
 
 	level.Info(logger).Log("msg", "open sqlite db")
-	db, err := sqlite.NewDatabase(ctx, conf)
+	sqlitedb, err := sqlite.NewDatabase(ctx, conf)
 	if err != nil {
 		return err
 	}
-	defer db.Close()
+	defer sqlitedb.Close()
 
-	rep := repository.NewSimpleDB(db)
-	svc := service.NewTodoService(ctx, rep, logger)
+	db := repository.NewSimpleDB(sqlitedb)
+	svc := service.NewTodoService(ctx, db, logger)
 	mux := httpserver.NewMux(svc)
 	hsv := httpserver.NewHttpServer(mux)
 
