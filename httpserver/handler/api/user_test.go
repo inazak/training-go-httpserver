@@ -24,7 +24,7 @@ func TestServeAddUser(t *testing.T) {
 			prepareMock: func(m *mock.MockService) {
 				m.EXPECT().AddUser(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(model.UserID(1), nil)
 			},
-			request:  `{ "username": "abc", "password": "xyz", "role": "123" }`,
+			request:  `{ "name": "abc", "password": "xyz", "role": "123" }`,
 			response: `{ "id": 1 }`,
 			status:   http.StatusOK,
 		},
@@ -32,11 +32,11 @@ func TestServeAddUser(t *testing.T) {
 			prepareMock: func(m *mock.MockService) {
 				// AddTaskが呼ばれないテストなので、EXPECT()しない
 			},
-			request:  `{ "xxx": "ng" }`,
-			response: `{ "message": "Key: 'Username' Error:Field validation for 'Username' failed on the 'required' tag` + "\\n" +
+			request: `{ "xxx": "ng" }`,
+			response: `{ "message": "Key: 'Name' Error:Field validation for 'Name' failed on the 'required' tag` + "\\n" +
 				`Key: 'Password' Error:Field validation for 'Password' failed on the 'required' tag` + "\\n" +
 				`Key: 'Role' Error:Field validation for 'Role' failed on the 'required' tag" }`,
-			status:   http.StatusBadRequest,
+			status: http.StatusBadRequest,
 		},
 	}
 

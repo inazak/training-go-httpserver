@@ -84,4 +84,3 @@ func (st *TodoService) GetUser(ctx context.Context, name string) (*model.User, e
 	}
 	return user, nil
 }
-

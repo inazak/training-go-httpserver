@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"fmt"
 	"context"
+	"fmt"
 	"github.com/inazak/training-go-httpserver/common/clock"
 	"github.com/inazak/training-go-httpserver/model"
 	"github.com/inazak/training-go-httpserver/repository/database"
@@ -81,12 +81,11 @@ func (sd *SimpleDB) SelectUser(ctx context.Context, name string) (*model.User, e
 	}
 
 	if len(result) == 0 {
-    return nil, fmt.Errorf("no match")
+		return nil, fmt.Errorf("no match")
 	}
 
 	if len(result) > 1 {
-    return nil, fmt.Errorf("unexpected multi match")
+		return nil, fmt.Errorf("unexpected multi match")
 	}
 	return result[0], nil
 }
-
