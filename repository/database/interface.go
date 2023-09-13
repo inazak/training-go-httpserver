@@ -11,6 +11,6 @@ type Result interface {
 
 type Database interface {
 	Close()
-	Select(ctx context.Context, dest interface{}, query string) error
+	Select(ctx context.Context, dest interface{}, query string, args ...interface{}) error
 	NamedExec(ctx context.Context, query string, arg interface{}) (Result, error)
 }

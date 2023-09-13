@@ -42,6 +42,14 @@ func TestUseSqliteDB(t *testing.T) {
 
 	sd.InsertUser(ctx, &model.User{Name: "firstuser"})
 
+	user, err := sd.SelectUser(ctx, "firstuser")
+	if err != nil {
+		t.Fatalf("failed SelectUser: %v", err)
+	}
+	if user.ID != 1 {
+		t.Fatalf("unmatch UserID: expect=%d, got=%d", 1, user.ID)
+	}
+
 	for i, p := range ps {
 		err = sd.InsertTask(ctx, p)
 		if err != nil {

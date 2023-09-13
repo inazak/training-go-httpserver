@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"context"
 	"github.com/inazak/training-go-httpserver/common/clock"
 	"github.com/inazak/training-go-httpserver/model"
@@ -70,3 +71,22 @@ func (sd *SimpleDB) InsertUser(ctx context.Context, user *model.User) error {
 	user.ID = model.UserID(id)
 	return nil
 }
+
+func (sd *SimpleDB) SelectUser(ctx context.Context, name string) (*model.User, error) {
+	result := []*model.User{}
+
+	sql := `SELECT * FROM user WHERE name = ?;`
+	if err := sd.Select(ctx, &result, sql, name); err != nil {
+		return nil, err
+	}
+
+	if len(result) == 0 {
+    return nil, fmt.Errorf("no match")
+	}
+
+	if len(result) > 1 {
+    return nil, fmt.Errorf("unexpected multi match")
+	}
+	return result[0], nil
+}
+

@@ -56,8 +56,8 @@ func (d *DB) Close() {
 	}
 }
 
-func (db *DB) Select(ctx context.Context, dest interface{}, query string) error {
-	return db.SqlxDB.SelectContext(ctx, dest, query)
+func (db *DB) Select(ctx context.Context, dest interface{}, query string, args ...interface{}) error {
+	return db.SqlxDB.SelectContext(ctx, dest, query, args...)
 }
 
 func (db *DB) NamedExec(ctx context.Context, query string, arg interface{}) (database.Result, error) {
