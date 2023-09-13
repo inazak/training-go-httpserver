@@ -16,4 +16,5 @@ type Service interface {
 	AddTask(ctx context.Context, title string) (*model.Task, error)
 	AddUser(ctx context.Context, name string, password string, role string) (model.UserID, error)
 	GetUser(ctx context.Context, name string) (*model.User, error)
+	Login(ctx context.Context, name string, password string) (string, error)
 }

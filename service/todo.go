@@ -84,3 +84,19 @@ func (st *TodoService) GetUser(ctx context.Context, name string) (*model.User, e
 	}
 	return user, nil
 }
+
+func (st *TodoService) Login(ctx context.Context, name string, password string) (string, error) {
+	level.Info(st.logger).Log("msg", "in service.Login")
+	user, err := st.GetUser(ctx, name)
+	if err != nil {
+		level.Error(st.logger).Log("msg", "in repository.SelectUser", "err", err)
+		return "", err
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)) ; err != nil {
+		level.Error(st.logger).Log("msg", "in compare password", "err", err)
+		return "", err
+	}
+
+	return string(user.ID), nil//FIXME
+}
