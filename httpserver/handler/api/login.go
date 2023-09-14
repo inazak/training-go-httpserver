@@ -48,7 +48,7 @@ func (h *Handler) ServeLogin(w http.ResponseWriter, r *http.Request) {
 
 	// 正常な場合はIDを返す
 	rsp := struct {
-		Token string  `json:"token"`
+		Token string `json:"token"`
 	}{
 		Token: token,
 	}

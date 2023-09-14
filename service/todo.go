@@ -93,10 +93,10 @@ func (st *TodoService) Login(ctx context.Context, name string, password string) 
 		return "", err
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)) ; err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
 		level.Error(st.logger).Log("msg", "in compare password", "err", err)
 		return "", err
 	}
 
-	return string(user.ID), nil//FIXME
+	return string(user.ID), nil //FIXME
 }
