@@ -80,6 +80,21 @@ func (mr *MockServiceMockRecorder) GetTaskList(ctx interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTaskList", reflect.TypeOf((*MockService)(nil).GetTaskList), ctx)
 }
 
+// GetUser mocks base method.
+func (m *MockService) GetUser(ctx context.Context, name string) (*model.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUser", ctx, name)
+	ret0, _ := ret[0].(*model.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUser indicates an expected call of GetUser.
+func (mr *MockServiceMockRecorder) GetUser(ctx, name interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUser", reflect.TypeOf((*MockService)(nil).GetUser), ctx, name)
+}
+
 // HealthCheck mocks base method.
 func (m *MockService) HealthCheck(ctx context.Context) error {
 	m.ctrl.T.Helper()
@@ -92,4 +107,19 @@ func (m *MockService) HealthCheck(ctx context.Context) error {
 func (mr *MockServiceMockRecorder) HealthCheck(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HealthCheck", reflect.TypeOf((*MockService)(nil).HealthCheck), ctx)
+}
+
+// Login mocks base method.
+func (m *MockService) Login(ctx context.Context, name, password string) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Login", ctx, name, password)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Login indicates an expected call of Login.
+func (mr *MockServiceMockRecorder) Login(ctx, name, password interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockService)(nil).Login), ctx, name, password)
 }

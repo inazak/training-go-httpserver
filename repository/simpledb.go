@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"github.com/inazak/training-go-httpserver/common/clock"
 	"github.com/inazak/training-go-httpserver/model"
 	"github.com/inazak/training-go-httpserver/repository/database"
@@ -22,7 +23,7 @@ func (sd *SimpleDB) InsertTask(ctx context.Context, task *model.Task) error {
 	task.Created = clock.NowString()
 	task.Modified = task.Created
 
-	sql := `INSERT INTO task (title, status, created, modified) VALUES (:title, :status, :created, :modified);`
+	sql := `INSERT INTO task (userid, title, status, created, modified) VALUES (:userid, :title, :status, :created, :modified);`
 
 	//FIXME この動作はsqlxが前提となり、抽象を破壊している
 	result, err := sd.NamedExec(ctx, sql, task)
@@ -69,4 +70,22 @@ func (sd *SimpleDB) InsertUser(ctx context.Context, user *model.User) error {
 
 	user.ID = model.UserID(id)
 	return nil
+}
+
+func (sd *SimpleDB) SelectUser(ctx context.Context, name string) (*model.User, error) {
+	result := []*model.User{}
+
+	sql := `SELECT * FROM user WHERE name = ?;`
+	if err := sd.Select(ctx, &result, sql, name); err != nil {
+		return nil, err
+	}
+
+	if len(result) == 0 {
+		return nil, fmt.Errorf("no match")
+	}
+
+	if len(result) > 1 {
+		return nil, fmt.Errorf("unexpected multi match")
+	}
+	return result[0], nil
 }

@@ -32,13 +32,23 @@ func TestUseSqliteDB(t *testing.T) {
 	})
 
 	ps := model.TaskList{
-		{Title: "Hydrogen", Status: model.TaskStatusTodo},
-		{Title: "Helium", Status: model.TaskStatusDone},
-		{Title: "Lithium", Status: model.TaskStatusTodo},
+		{UserID: 1, Title: "Hydrogen", Status: model.TaskStatusTodo},
+		{UserID: 1, Title: "Helium", Status: model.TaskStatusDone},
+		{UserID: 1, Title: "Lithium", Status: model.TaskStatusTodo},
 	}
 
 	ctx := context.Background()
 	sd := NewSimpleDB(db)
+
+	sd.InsertUser(ctx, &model.User{Name: "firstuser"})
+
+	user, err := sd.SelectUser(ctx, "firstuser")
+	if err != nil {
+		t.Fatalf("failed SelectUser: %v", err)
+	}
+	if user.ID != 1 {
+		t.Fatalf("unmatch UserID: expect=%d, got=%d", 1, user.ID)
+	}
 
 	for i, p := range ps {
 		err = sd.InsertTask(ctx, p)

@@ -20,6 +20,7 @@ func NewMux(svc service.Service) http.Handler {
 	mux.Get("/task", apiHandler.ServeGetTaskList)
 	mux.Post("/task", apiHandler.ServeAddTask)
 	mux.Post("/register", apiHandler.ServeAddUser)
+	mux.Post("/login", apiHandler.ServeLogin)
 
 	return mux
 }
