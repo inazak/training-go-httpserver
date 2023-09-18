@@ -25,7 +25,7 @@ func TestServeLogin(t *testing.T) {
 				m.EXPECT().Login(gomock.Any(), gomock.Any(), gomock.Any()).Return(string("1"), nil)
 			},
 			request:  `{ "name": "abc", "password": "xyz" }`,
-			response: `{ "token": "1" }`,
+			response: `{ "accesstoken": "1" }`,
 			status:   http.StatusOK,
 		},
 		"badRequest": {

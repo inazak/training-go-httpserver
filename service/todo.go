@@ -1,11 +1,14 @@
 package service
 
 import (
+	"fmt"
 	"context"
+	"time"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/inazak/training-go-httpserver/model"
 	"github.com/inazak/training-go-httpserver/repository"
+	"github.com/inazak/training-go-httpserver/common/jwter"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -13,12 +16,14 @@ import (
 // そのため、この層でのロギングが必要である
 type TodoService struct {
 	db     repository.Database
+	jwter  *jwter.JWTer
 	logger log.Logger
 }
 
-func NewTodoService(ctx context.Context, db repository.Database, logger log.Logger) *TodoService {
+func NewTodoService(ctx context.Context, db repository.Database, jwter *jwter.JWTer, logger log.Logger) *TodoService {
 	return &TodoService{
 		db:     db,
+		jwter:  jwter,
 		logger: logger,
 	}
 }
@@ -98,5 +103,15 @@ func (st *TodoService) Login(ctx context.Context, name string, password string) 
 		return "", err
 	}
 
-	return string(user.ID), nil //FIXME
+	//FIXME キー名や失効までの時間を外で定義しなおすこと
+	claims := []jwter.Claim{
+		{ Key: "uid", Value: fmt.Sprintf("%d", user.ID), },
+	}
+	_, token, err := st.jwter.GenerateToken("accesstoken", time.Minute*10, claims)
+	if err != nil {
+		level.Error(st.logger).Log("msg", "in generate token", "err", err)
+		return "", err
+	}
+
+	return string(token), nil
 }
