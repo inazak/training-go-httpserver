@@ -10,6 +10,7 @@ import (
 	"github.com/inazak/training-go-httpserver/httpserver"
 	"github.com/inazak/training-go-httpserver/repository"
 	"github.com/inazak/training-go-httpserver/repository/database/sqlite"
+	"github.com/inazak/training-go-httpserver/repository/kvs/ttlmap"
 	"github.com/inazak/training-go-httpserver/service"
 	"os"
 	_ "embed"
@@ -51,12 +52,15 @@ func runHttpServer(logger log.Logger) error {
 	defer sqlitedb.Close()
 	db := repository.NewSimpleDB(sqlitedb)
 
+	ttl := ttlmap.NewTTLMap()
+	kvs := repository.NewSimpleKVS(ttl)
+
 	jtr, err := jwter.NewJWTer(`github.com/inazak/training-go-httpserver`, rawPrivateKey, rawPublicKey)
 	if err != nil {
 		return err
 	}
 
-	svc := service.NewTodoService(ctx, db, jtr, logger)
+	svc := service.NewTodoService(ctx, db, kvs, jtr, logger)
 	mux := httpserver.NewMux(svc)
 	hsv := httpserver.NewHttpServer(mux)
 

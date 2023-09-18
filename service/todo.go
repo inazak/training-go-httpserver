@@ -16,13 +16,15 @@ import (
 // そのため、この層でのロギングが必要である
 type TodoService struct {
 	db     repository.Database
+	kvs    repository.KVS
 	jwter  *jwter.JWTer
 	logger log.Logger
 }
 
-func NewTodoService(ctx context.Context, db repository.Database, jwter *jwter.JWTer, logger log.Logger) *TodoService {
+func NewTodoService(ctx context.Context, db repository.Database, kvs repository.KVS, jwter *jwter.JWTer, logger log.Logger) *TodoService {
 	return &TodoService{
 		db:     db,
+		kvs:    kvs,
 		jwter:  jwter,
 		logger: logger,
 	}
@@ -107,11 +109,18 @@ func (st *TodoService) Login(ctx context.Context, name string, password string) 
 	claims := []jwter.Claim{
 		{ Key: "uid", Value: fmt.Sprintf("%d", user.ID), },
 	}
-	_, token, err := st.jwter.GenerateToken("accesstoken", time.Minute*10, claims)
+	jwtid, token, err := st.jwter.GenerateToken("accesstoken", time.Minute*10, claims)
 	if err != nil {
 		level.Error(st.logger).Log("msg", "in generate token", "err", err)
 		return "", err
 	}
 
+	err = st.kvs.SetUserID(ctx, jwtid, user.ID, 600)
+	if err != nil {
+		level.Error(st.logger).Log("msg", "in kvs.SetUserID", "err", err)
+		return "", err
+	}
+
 	return string(token), nil
 }
+
