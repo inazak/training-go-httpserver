@@ -1,6 +1,7 @@
 package service
 
 import (
+	"net/http"
 	"fmt"
 	"context"
 	"time"
@@ -124,3 +125,20 @@ func (st *TodoService) Login(ctx context.Context, name string, password string) 
 	return string(token), nil
 }
 
+func (st *TodoService) ValidateToken(ctx context.Context, r *http.Request) (model.UserID, error) {
+	level.Info(st.logger).Log("msg", "in service.ValidateToken")
+
+	token, err := st.jwter.ParseRequest(r)
+	if err != nil {
+		level.Error(st.logger).Log("msg", "in jwter.ParseRequest", "err", err)
+		return -1, err
+	}
+
+	id, err := st.kvs.GetUserID(ctx, token.JwtID())
+	if err != nil {
+		level.Error(st.logger).Log("msg", "in kvs.GetUserID", "err", err)
+		return -1, err
+	}
+
+	return id, nil
+}

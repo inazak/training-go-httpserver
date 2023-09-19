@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"net/http"
 	"github.com/inazak/training-go-httpserver/model"
 )
 
@@ -17,4 +18,5 @@ type Service interface {
 	AddUser(ctx context.Context, name string, password string, role string) (model.UserID, error)
 	GetUser(ctx context.Context, name string) (*model.User, error)
 	Login(ctx context.Context, name string, password string) (string, error)
+	ValidateToken(ctx context.Context, r *http.Request) (model.UserID, error)
 }

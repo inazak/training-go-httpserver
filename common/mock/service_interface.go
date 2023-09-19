@@ -6,6 +6,7 @@ package mock
 
 import (
 	context "context"
+	http "net/http"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -122,4 +123,19 @@ func (m *MockService) Login(ctx context.Context, name, password string) (string,
 func (mr *MockServiceMockRecorder) Login(ctx, name, password interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockService)(nil).Login), ctx, name, password)
+}
+
+// ValidateToken mocks base method.
+func (m *MockService) ValidateToken(ctx context.Context, r *http.Request) (model.UserID, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ValidateToken", ctx, r)
+	ret0, _ := ret[0].(model.UserID)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ValidateToken indicates an expected call of ValidateToken.
+func (mr *MockServiceMockRecorder) ValidateToken(ctx, r interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ValidateToken", reflect.TypeOf((*MockService)(nil).ValidateToken), ctx, r)
 }
