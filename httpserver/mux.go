@@ -17,10 +17,13 @@ func NewMux(svc service.Service) http.Handler {
 
 	apiHandler := api.NewHandler(svc)
 	mux.HandleFunc("/health", apiHandler.ServeHealthCheck)
-	mux.Get("/task", apiHandler.ServeGetTaskList)
-	mux.Post("/task", apiHandler.ServeAddTask)
 	mux.Post("/register", apiHandler.ServeAddUser)
 	mux.Post("/login", apiHandler.ServeLogin)
+
+	mux.Route("/task", func(r chi.Router) {
+		r.Get("/", apiHandler.ServeAddTask)
+		r.Post("/", apiHandler.ServeGetTaskList)
+	})
 
 	return mux
 }
