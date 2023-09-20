@@ -1,16 +1,16 @@
 package service
 
 import (
-	"net/http"
-	"fmt"
 	"context"
-	"time"
+	"fmt"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
+	"github.com/inazak/training-go-httpserver/common/jwter"
 	"github.com/inazak/training-go-httpserver/model"
 	"github.com/inazak/training-go-httpserver/repository"
-	"github.com/inazak/training-go-httpserver/common/jwter"
 	"golang.org/x/crypto/bcrypt"
+	"net/http"
+	"time"
 )
 
 // これより上位のUI層で詳細なエラー情報を返すことはない
@@ -109,7 +109,7 @@ func (st *TodoService) Login(ctx context.Context, name string, password string) 
 
 	//FIXME キー名や失効までの時間を外で定義しなおすこと
 	claims := []jwter.Claim{
-		{ Key: "uid", Value: fmt.Sprintf("%d", user.ID), },
+		{Key: "uid", Value: fmt.Sprintf("%d", user.ID)},
 	}
 	jwtid, token, err := st.jwter.GenerateToken("accesstoken", time.Minute*10, claims)
 	if err != nil {

@@ -2,18 +2,18 @@ package main
 
 import (
 	"context"
+	_ "embed"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/inazak/training-go-httpserver/common/config"
-	"github.com/inazak/training-go-httpserver/common/logging"
 	"github.com/inazak/training-go-httpserver/common/jwter"
+	"github.com/inazak/training-go-httpserver/common/logging"
 	"github.com/inazak/training-go-httpserver/httpserver"
 	"github.com/inazak/training-go-httpserver/repository"
 	"github.com/inazak/training-go-httpserver/repository/database/sqlite"
 	"github.com/inazak/training-go-httpserver/repository/kvs/ttlmap"
 	"github.com/inazak/training-go-httpserver/service"
 	"os"
-	_ "embed"
 )
 
 // 秘密鍵と公開鍵の生成

@@ -1,8 +1,8 @@
 package api
 
 import (
-	"github.com/inazak/training-go-httpserver/common/jsonhelper"
 	"context"
+	"github.com/inazak/training-go-httpserver/common/jsonhelper"
 	"net/http"
 )
 
@@ -26,4 +26,3 @@ func (h *Handler) AuthMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
-

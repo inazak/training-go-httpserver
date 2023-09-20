@@ -64,4 +64,3 @@ func (m *TTLMap) Delete(k string) {
 	delete(m.mapping, k)
 	m.Unlock()
 }
-

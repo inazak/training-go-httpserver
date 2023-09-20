@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"net/http"
 	"github.com/inazak/training-go-httpserver/model"
+	"net/http"
 )
 
 // golang/mock はすでに archived になっている

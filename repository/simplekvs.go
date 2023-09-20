@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"fmt"
 	"context"
+	"fmt"
 	"github.com/inazak/training-go-httpserver/model"
 	"github.com/inazak/training-go-httpserver/repository/kvs"
 )
@@ -23,7 +23,7 @@ func (k *SimpleKVS) SetUserID(ctx context.Context, key string, id model.UserID, 
 	return nil
 }
 
-func (k *SimpleKVS)	GetUserID(ctx context.Context, key string) (model.UserID, error) {
+func (k *SimpleKVS) GetUserID(ctx context.Context, key string) (model.UserID, error) {
 	v, ok := k.Get(key)
 	if !ok {
 		return -1, fmt.Errorf("expired or deleted key") //FIXME -1
@@ -31,4 +31,3 @@ func (k *SimpleKVS)	GetUserID(ctx context.Context, key string) (model.UserID, er
 	id := v.(model.UserID)
 	return id, nil
 }
-
