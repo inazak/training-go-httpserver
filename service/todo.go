@@ -46,10 +46,11 @@ func (st *TodoService) GetTaskList(ctx context.Context) (model.TaskList, error) 
 	return rs, nil
 }
 
-func (st *TodoService) AddTask(ctx context.Context, title string) (*model.Task, error) {
+func (st *TodoService) AddTask(ctx context.Context, id model.UserID, title string) (*model.Task, error) {
 
 	level.Info(st.logger).Log("msg", "in service.AddTask")
 	task := &model.Task{
+		UserID: id,
 		Title:  title,
 		Status: model.TaskStatusTodo,
 	}
