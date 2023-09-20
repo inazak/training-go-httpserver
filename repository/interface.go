@@ -11,3 +11,8 @@ type Database interface {
 	InsertUser(ctx context.Context, user *model.User) error
 	SelectUser(ctx context.Context, name string) (*model.User, error)
 }
+
+type KVS interface {
+	SetUserID(ctx context.Context, key string, id model.UserID, ttl int64) error
+	GetUserID(ctx context.Context, key string) (model.UserID, error)
+}

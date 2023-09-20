@@ -5,6 +5,12 @@ import (
 	"github.com/inazak/training-go-httpserver/service"
 )
 
+type contextKey string
+
+var (
+	contextKeyUserID contextKey = "userid"
+)
+
 var (
 	validation = validator.New()
 )

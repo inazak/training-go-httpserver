@@ -42,8 +42,18 @@ func (h *Handler) ServeAddTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	id, ok := ctx.Value(contextKeyUserID).(model.UserID)
+	if !ok {
+		_ = jsonhelper.WriteJSONResponse(
+			ctx,
+			w,
+			&jsonhelper.ErrorResponse{Message: "context has no userid"},
+			http.StatusInternalServerError)
+		return
+	}
+
 	// Serviceから新規タスクの登録処理
-	t, err := h.backend.AddTask(ctx, body.Title)
+	t, err := h.backend.AddTask(ctx, id, body.Title)
 	if err != nil {
 		_ = jsonhelper.WriteJSONResponse(
 			ctx,

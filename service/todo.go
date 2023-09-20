@@ -2,23 +2,31 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
+	"github.com/inazak/training-go-httpserver/common/jwter"
 	"github.com/inazak/training-go-httpserver/model"
 	"github.com/inazak/training-go-httpserver/repository"
 	"golang.org/x/crypto/bcrypt"
+	"net/http"
+	"time"
 )
 
 // これより上位のUI層で詳細なエラー情報を返すことはない
 // そのため、この層でのロギングが必要である
 type TodoService struct {
 	db     repository.Database
+	kvs    repository.KVS
+	jwter  *jwter.JWTer
 	logger log.Logger
 }
 
-func NewTodoService(ctx context.Context, db repository.Database, logger log.Logger) *TodoService {
+func NewTodoService(ctx context.Context, db repository.Database, kvs repository.KVS, jwter *jwter.JWTer, logger log.Logger) *TodoService {
 	return &TodoService{
 		db:     db,
+		kvs:    kvs,
+		jwter:  jwter,
 		logger: logger,
 	}
 }
@@ -38,10 +46,11 @@ func (st *TodoService) GetTaskList(ctx context.Context) (model.TaskList, error) 
 	return rs, nil
 }
 
-func (st *TodoService) AddTask(ctx context.Context, title string) (*model.Task, error) {
+func (st *TodoService) AddTask(ctx context.Context, id model.UserID, title string) (*model.Task, error) {
 
 	level.Info(st.logger).Log("msg", "in service.AddTask")
 	task := &model.Task{
+		UserID: id,
 		Title:  title,
 		Status: model.TaskStatusTodo,
 	}
@@ -98,5 +107,39 @@ func (st *TodoService) Login(ctx context.Context, name string, password string) 
 		return "", err
 	}
 
-	return string(user.ID), nil //FIXME
+	//FIXME キー名や失効までの時間を外で定義しなおすこと
+	claims := []jwter.Claim{
+		{Key: "uid", Value: fmt.Sprintf("%d", user.ID)},
+	}
+	jwtid, token, err := st.jwter.GenerateToken("accesstoken", time.Minute*10, claims)
+	if err != nil {
+		level.Error(st.logger).Log("msg", "in generate token", "err", err)
+		return "", err
+	}
+
+	err = st.kvs.SetUserID(ctx, jwtid, user.ID, 600)
+	if err != nil {
+		level.Error(st.logger).Log("msg", "in kvs.SetUserID", "err", err)
+		return "", err
+	}
+
+	return string(token), nil
+}
+
+func (st *TodoService) ValidateToken(ctx context.Context, r *http.Request) (model.UserID, error) {
+	level.Info(st.logger).Log("msg", "in service.ValidateToken")
+
+	token, err := st.jwter.ParseRequest(r)
+	if err != nil {
+		level.Error(st.logger).Log("msg", "in jwter.ParseRequest", "err", err)
+		return -1, err
+	}
+
+	id, err := st.kvs.GetUserID(ctx, token.JwtID())
+	if err != nil {
+		level.Error(st.logger).Log("msg", "in kvs.GetUserID", "err", err)
+		return -1, err
+	}
+
+	return id, nil
 }
