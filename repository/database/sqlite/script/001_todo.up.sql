@@ -2,7 +2,6 @@ CREATE TABLE IF NOT EXISTS user (
   id       INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
   name     TEXT NOT NULL,
   password TEXT NOT NULL,
-  role     TEXT NOT NULL,
   created  TEXT NOT NULL,
   modified TEXT NOT NULL,
   UNIQUE(name)

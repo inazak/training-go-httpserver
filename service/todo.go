@@ -62,7 +62,7 @@ func (st *TodoService) AddTask(ctx context.Context, id model.UserID, title strin
 	return task, nil
 }
 
-func (st *TodoService) AddUser(ctx context.Context, name string, password string, role string) (model.UserID, error) {
+func (st *TodoService) AddUser(ctx context.Context, name string, password string) (model.UserID, error) {
 
 	pwhash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -74,7 +74,6 @@ func (st *TodoService) AddUser(ctx context.Context, name string, password string
 	user := &model.User{
 		Name:     name,
 		Password: string(pwhash),
-		Role:     role,
 	}
 	err = st.db.InsertUser(ctx, user)
 	if err != nil {

@@ -22,9 +22,9 @@ func TestServeAddUser(t *testing.T) {
 	}{
 		"ok": {
 			prepareMock: func(m *mock.MockService) {
-				m.EXPECT().AddUser(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(model.UserID(1), nil)
+				m.EXPECT().AddUser(gomock.Any(), gomock.Any(), gomock.Any()).Return(model.UserID(1), nil)
 			},
-			request:  `{ "name": "abc", "password": "xyz", "role": "123" }`,
+			request:  `{ "name": "abc", "password": "xyz" }`,
 			response: `{ "id": 1 }`,
 			status:   http.StatusOK,
 		},
@@ -34,8 +34,7 @@ func TestServeAddUser(t *testing.T) {
 			},
 			request: `{ "xxx": "ng" }`,
 			response: `{ "message": "Key: 'Name' Error:Field validation for 'Name' failed on the 'required' tag` + "\\n" +
-				`Key: 'Password' Error:Field validation for 'Password' failed on the 'required' tag` + "\\n" +
-				`Key: 'Role' Error:Field validation for 'Role' failed on the 'required' tag" }`,
+				`Key: 'Password' Error:Field validation for 'Password' failed on the 'required' tag" }`,
 			status: http.StatusBadRequest,
 		},
 	}
