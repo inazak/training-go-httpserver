@@ -15,7 +15,7 @@ require (
 	github.com/lestrrat-go/jwx/v2 v2.0.12
 	github.com/mattn/go-sqlite3 v1.14.17
 	github.com/pkg/errors v0.9.1
-	golang.org/x/crypto v0.12.0
+	golang.org/x/crypto v0.13.0
 	golang.org/x/sync v0.3.0
 )
 
@@ -36,7 +36,7 @@ require (
 	github.com/lestrrat-go/option v1.0.1 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
-	golang.org/x/net v0.10.0 // indirect
-	golang.org/x/sys v0.11.0 // indirect
-	golang.org/x/text v0.12.0 // indirect
+	golang.org/x/net v0.15.0 // indirect
+	golang.org/x/sys v0.12.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 )

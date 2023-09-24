@@ -55,7 +55,7 @@ func (sd *SimpleDB) InsertUser(ctx context.Context, user *model.User) error {
 	user.Created = clock.NowString()
 	user.Modified = user.Created
 
-	sql := `INSERT INTO user (name, password, role, created, modified) VALUES (:name, :password, :role, :created, :modified);`
+	sql := `INSERT INTO user (name, password, created, modified) VALUES (:name, :password, :created, :modified);`
 
 	//FIXME この動作はsqlxが前提となり、抽象を破壊している
 	result, err := sd.NamedExec(ctx, sql, user)
