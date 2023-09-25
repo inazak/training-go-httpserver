@@ -40,12 +40,12 @@ func (sd *SimpleDB) InsertTask(ctx context.Context, task *model.Task) error {
 	return nil
 }
 
-func (sd *SimpleDB) SelectTaskList(ctx context.Context) (model.TaskList, error) {
+func (sd *SimpleDB) SelectTaskList(ctx context.Context, id model.UserID) (model.TaskList, error) {
 	tasklist := model.TaskList{}
 
 	//FIXME この動作はsqlxが前提となり、抽象を破壊している
-	sql := `SELECT * FROM task;`
-	if err := sd.Select(ctx, &tasklist, sql); err != nil {
+	sql := `SELECT * FROM task where userid = ?;`
+	if err := sd.Select(ctx, &tasklist, sql, id); err != nil {
 		return nil, err
 	}
 	return tasklist, nil

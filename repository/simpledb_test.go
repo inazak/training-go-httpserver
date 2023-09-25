@@ -57,7 +57,7 @@ func TestUseSqliteDB(t *testing.T) {
 		}
 	}
 
-	rs, err := sd.SelectTaskList(ctx)
+	rs, err := sd.SelectTaskList(ctx, model.UserID(1))
 	if err != nil {
 		t.Errorf("failed ListTask: %v", err)
 	}

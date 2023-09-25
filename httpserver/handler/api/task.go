@@ -79,7 +79,17 @@ func (h *Handler) ServeGetTaskList(w http.ResponseWriter, r *http.Request) {
 	// ここは単純なGETと呼ばれることを想定しており
 	// bodyのチェックが何もなくて、いきなり応答を作成する
 
-	tasklist, err := h.backend.GetTaskList(ctx)
+	id, ok := ctx.Value(contextKeyUserID).(model.UserID)
+	if !ok {
+		_ = jsonhelper.WriteJSONResponse(
+			ctx,
+			w,
+			&jsonhelper.ErrorResponse{Message: "context has no userid"},
+			http.StatusInternalServerError)
+		return
+	}
+
+	tasklist, err := h.backend.GetTaskList(ctx, id)
 	if err != nil {
 		_ = jsonhelper.WriteJSONResponse(
 			ctx,

@@ -22,8 +22,8 @@ func NewMux(svc service.Service) http.Handler {
 
 	mux.Route("/task", func(r chi.Router) {
 		r.Use(apiHandler.AuthMiddleware)
-		r.Get("/", apiHandler.ServeAddTask)
-		r.Post("/", apiHandler.ServeGetTaskList)
+		r.Get("/", apiHandler.ServeGetTaskList)
+		r.Post("/", apiHandler.ServeAddTask)
 	})
 
 	return mux

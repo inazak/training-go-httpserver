@@ -36,9 +36,9 @@ func (st *TodoService) HealthCheck(ctx context.Context) error {
 	return nil
 }
 
-func (st *TodoService) GetTaskList(ctx context.Context) (model.TaskList, error) {
+func (st *TodoService) GetTaskList(ctx context.Context, id model.UserID) (model.TaskList, error) {
 	level.Info(st.logger).Log("msg", "in service.GetTaskList")
-	rs, err := st.db.SelectTaskList(ctx)
+	rs, err := st.db.SelectTaskList(ctx, id)
 	if err != nil {
 		level.Error(st.logger).Log("msg", "in repository.SelectTaskList", "err", err)
 		return nil, err
