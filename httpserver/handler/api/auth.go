@@ -21,7 +21,7 @@ func (h *Handler) AuthMiddleware(next http.Handler) http.Handler {
 		}
 
 		ctx = context.WithValue(ctx, contextKeyUserID, id)
-		r.WithContext(ctx)
+		r = r.WithContext(ctx)
 
 		next.ServeHTTP(w, r)
 	})
