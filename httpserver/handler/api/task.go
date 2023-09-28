@@ -7,14 +7,6 @@ import (
 	"net/http"
 )
 
-// FIXME これいまいち
-// レスポンスで使う用のJSON構造
-type task struct {
-	ID     model.TaskID     `json:"id"`
-	Title  string           `json:"title"`
-	Status model.TaskStatus `json:"status"`
-}
-
 func (h *Handler) ServeAddTask(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
@@ -97,6 +89,12 @@ func (h *Handler) ServeGetTaskList(w http.ResponseWriter, r *http.Request) {
 			&jsonhelper.ErrorResponse{Message: err.Error()},
 			http.StatusInternalServerError)
 		return
+	}
+
+	type task struct {
+		ID     model.TaskID     `json:"id"`
+		Title  string           `json:"title"`
+		Status model.TaskStatus `json:"status"`
 	}
 
 	rsp := []task{}

@@ -47,7 +47,7 @@ func NewDatabase(ctx context.Context, cfg *config.Config) (*DB, error) {
 }
 
 func (d *DB) Close() {
-	// 本当に sqlx.DB の Close だけではダメなのだろうか
+	// sqlx.DB の Close だけではダメなのだろうか
 	if d.SqlDB != nil {
 		d.SqlDB.Close()
 	}

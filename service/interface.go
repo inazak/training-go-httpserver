@@ -6,7 +6,6 @@ import (
 	"net/http"
 )
 
-// golang/mock はすでに archived になっている
 // インストールは go install github.com/golang/mock/mockgen@v1.6.0
 // 下記の通り書いてから go generate ./service.go でモックを生成
 

@@ -13,8 +13,6 @@ import (
 	"time"
 )
 
-// これより上位のUI層で詳細なエラー情報を返すことはない
-// そのため、この層でのロギングが必要である
 type TodoService struct {
 	db     repository.Database
 	kvs    repository.KVS
