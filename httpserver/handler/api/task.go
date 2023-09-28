@@ -7,14 +7,6 @@ import (
 	"net/http"
 )
 
-// FIXME これいまいち
-// レスポンスで使う用のJSON構造
-type task struct {
-	ID     model.TaskID     `json:"id"`
-	Title  string           `json:"title"`
-	Status model.TaskStatus `json:"status"`
-}
-
 func (h *Handler) ServeAddTask(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
@@ -79,7 +71,17 @@ func (h *Handler) ServeGetTaskList(w http.ResponseWriter, r *http.Request) {
 	// ここは単純なGETと呼ばれることを想定しており
 	// bodyのチェックが何もなくて、いきなり応答を作成する
 
-	tasklist, err := h.backend.GetTaskList(ctx)
+	id, ok := ctx.Value(contextKeyUserID).(model.UserID)
+	if !ok {
+		_ = jsonhelper.WriteJSONResponse(
+			ctx,
+			w,
+			&jsonhelper.ErrorResponse{Message: "context has no userid"},
+			http.StatusInternalServerError)
+		return
+	}
+
+	tasklist, err := h.backend.GetTaskList(ctx, id)
 	if err != nil {
 		_ = jsonhelper.WriteJSONResponse(
 			ctx,
@@ -87,6 +89,12 @@ func (h *Handler) ServeGetTaskList(w http.ResponseWriter, r *http.Request) {
 			&jsonhelper.ErrorResponse{Message: err.Error()},
 			http.StatusInternalServerError)
 		return
+	}
+
+	type task struct {
+		ID     model.TaskID     `json:"id"`
+		Title  string           `json:"title"`
+		Status model.TaskStatus `json:"status"`
 	}
 
 	rsp := []task{}

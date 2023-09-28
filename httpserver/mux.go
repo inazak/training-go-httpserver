@@ -7,11 +7,6 @@ import (
 	"net/http"
 )
 
-// go-chi/chi を利用する理由は、http.ServeMuxの表現力の乏しさ
-// 例えば /user/10 のようなパスパラメータの解釈
-// GET /users と POST /users といったメソッドの違いのハンドリング
-// が難しい
-
 func NewMux(svc service.Service) http.Handler {
 	mux := chi.NewRouter()
 
@@ -22,8 +17,8 @@ func NewMux(svc service.Service) http.Handler {
 
 	mux.Route("/task", func(r chi.Router) {
 		r.Use(apiHandler.AuthMiddleware)
-		r.Get("/", apiHandler.ServeAddTask)
-		r.Post("/", apiHandler.ServeGetTaskList)
+		r.Get("/", apiHandler.ServeGetTaskList)
+		r.Post("/", apiHandler.ServeAddTask)
 	})
 
 	return mux

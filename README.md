@@ -2,6 +2,10 @@
 
 ## 履歴
 
+### v0.0.21
+
+- testclientにperl script を追加
+
 ### v0.0.20
 
 - 使用していない model.User.Role を削除

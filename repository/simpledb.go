@@ -25,7 +25,6 @@ func (sd *SimpleDB) InsertTask(ctx context.Context, task *model.Task) error {
 
 	sql := `INSERT INTO task (userid, title, status, created, modified) VALUES (:userid, :title, :status, :created, :modified);`
 
-	//FIXME この動作はsqlxが前提となり、抽象を破壊している
 	result, err := sd.NamedExec(ctx, sql, task)
 	if err != nil {
 		return err
@@ -40,12 +39,11 @@ func (sd *SimpleDB) InsertTask(ctx context.Context, task *model.Task) error {
 	return nil
 }
 
-func (sd *SimpleDB) SelectTaskList(ctx context.Context) (model.TaskList, error) {
+func (sd *SimpleDB) SelectTaskList(ctx context.Context, id model.UserID) (model.TaskList, error) {
 	tasklist := model.TaskList{}
 
-	//FIXME この動作はsqlxが前提となり、抽象を破壊している
-	sql := `SELECT * FROM task;`
-	if err := sd.Select(ctx, &tasklist, sql); err != nil {
+	sql := `SELECT * FROM task where userid = ?;`
+	if err := sd.Select(ctx, &tasklist, sql, id); err != nil {
 		return nil, err
 	}
 	return tasklist, nil
@@ -57,7 +55,6 @@ func (sd *SimpleDB) InsertUser(ctx context.Context, user *model.User) error {
 
 	sql := `INSERT INTO user (name, password, created, modified) VALUES (:name, :password, :created, :modified);`
 
-	//FIXME この動作はsqlxが前提となり、抽象を破壊している
 	result, err := sd.NamedExec(ctx, sql, user)
 	if err != nil {
 		return err
